@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Camera, MapPin, DollarSign} from 'lucide-react';
 import { db, storage, auth } from '../firebase';
 import { collection, addDoc } from 'firebase/firestore';
@@ -17,20 +17,29 @@ const categories = {
 const Post = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    title: '',
-    category: '',
-    subcategory: '',
-    brand: '',
-    price: '',
-    location: '',
-    description: '',
-    negotiable: false,
-    delivery: 'free' as 'free' | 'charged',
-    condition: 'new'
+  const [formData, setFormData] = useState(() => {
+    // Initialize form data from localStorage if it exists
+    const savedData = localStorage.getItem('postDraft');
+    return savedData ? JSON.parse(savedData) : {
+      title: '',
+      category: '',
+      subcategory: '',
+      brand: '',
+      price: '',
+      location: '',
+      description: '',
+      negotiable: false,
+      delivery: 'free' as 'free' | 'charged',
+      condition: 'new'
+    };
   });
   const [images, setImages] = useState<File[]>([]);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
+
+  // Add effect to save form data to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('postDraft', JSON.stringify(formData));
+  }, [formData]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -78,6 +87,8 @@ const Post = () => {
       };
 
       const docRef = await addDoc(collection(db, 'posts'), postData);
+      // Clear the draft from localStorage after successful post
+      localStorage.removeItem('postDraft');
       navigate('/');
     } catch (error) {
       console.error('Error creating post:', error);
@@ -87,9 +98,35 @@ const Post = () => {
     }
   };
 
+  // Optional: Add a function to clear draft
+  const clearDraft = () => {
+    localStorage.removeItem('postDraft');
+    setFormData({
+      title: '',
+      category: '',
+      subcategory: '',
+      brand: '',
+      price: '',
+      location: '',
+      description: '',
+      negotiable: false,
+      delivery: 'free' as 'free' | 'charged',
+      condition: 'new'
+    });
+  };
+
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Post Your Item</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Post Your Item</h1>
+        <button
+          onClick={clearDraft}
+          type="button"
+          className="text-sm text-red-600 hover:text-red-800"
+        >
+          Clear Draft
+        </button>
+      </div>
       
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Images Upload Section */}

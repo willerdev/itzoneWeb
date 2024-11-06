@@ -30,7 +30,26 @@ const Register = () => {
 
       navigate('/login', { state: { message: 'Registration successful! Please login.' } });
     } catch (err) {
-      setError('Failed to create account');
+      if (err instanceof Error) {
+        // Firebase auth errors
+        switch (err.message) {
+          case 'Firebase: Error (auth/email-already-in-use).':
+            setError('Email is already registered');
+            break;
+          case 'Firebase: Error (auth/invalid-email).':
+            setError('Invalid email address');
+            break;
+          case 'Firebase: Password should be at least 6 characters (auth/weak-password).':
+            setError('Password should be at least 6 characters');
+            break;
+          default:
+            console.error('Registration error:', err);
+            setError('Failed to create account. Please try again.');
+        }
+      } else {
+        console.error('Unknown error:', err);
+        setError('An unexpected error occurred');
+      }
     } finally {
       setLoading(false);
     }
