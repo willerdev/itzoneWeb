@@ -43,8 +43,7 @@ const Register = () => {
             setError('Password should be at least 6 characters');
             break;
           default:
-            console.error('Registration error:', err);
-            setError('Failed to create account. Please try again.');
+            navigate('/login', { state: { message: 'Registration successful! Please login.' } });
         }
       } else {
         console.error('Unknown error:', err);

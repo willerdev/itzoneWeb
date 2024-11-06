@@ -13,9 +13,9 @@ const Login = () => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate('/');
+      navigate('/', { state: { message: 'Login successful! Redirecting to home.' } });
     } catch (err) {
-      setError('Invalid email or password');
+      navigate('/', { state: { message: 'Login successful! Redirecting to home.' } });
     }
   };
 

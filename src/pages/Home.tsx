@@ -391,14 +391,17 @@ const Home = () => {
           </Link>
         </div>
         
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 sm:grid-cols-5 gap-3 md:gap-4">
           {featuredProducts.map((product) => (
             <div
               key={product.id}
-              className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
+              className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition-shadow transform scale-90 lg:scale-70"
               onClick={() => navigate(`/product/${product.id}`)}
             >
               <div className="relative">
+              <span className="absolute top-17 left-2 bg-gray-100 px-2 py-3 mt-10 rounded-full text-xs font-medium text-gray-700">
+                  {product.condition}
+                </span>
                 <img
                   src={product.image}
                   alt={product.title}
@@ -407,19 +410,17 @@ const Home = () => {
                     e.currentTarget.src = "https://www.shutterstock.com/image-vector/image-icon-600nw-211642900.jpg";
                   }}
                 />
-                <span className="absolute top-2 left-2 bg-white px-2 py-1 rounded-full text-sm font-medium text-gray-700">
-                  {product.condition}
-                </span>
+               
               </div>
-              <div className="p-4">
-                <h3 className="font-semibold text-gray-900 mb-2 truncate">
+              <div className="p-3">
+                <h3 className="font-semibold text-gray-900 mb-1 truncate text-sm">
                   {product.title}
                 </h3>
-                <p className="text-[#fa9805] font-bold text-lg mb-2">
+                <p className="text-[#fa9805] font-bold text-base mb-1">
                   {product.price}
                 </p>
-                <div className="flex items-center text-sm text-gray-500">
-                  <MapPin className="h-4 w-4 mr-1" />
+                <div className="flex items-center text-xs text-gray-500">
+                  <MapPin className="h-3 w-3 mr-1" />
                   <span className="truncate">{product.location}</span>
                 </div>
               </div>
